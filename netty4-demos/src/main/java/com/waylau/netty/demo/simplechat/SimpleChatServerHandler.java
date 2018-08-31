@@ -21,6 +21,12 @@ public class SimpleChatServerHandler extends SimpleChannelInboundHandler<String>
 	 */
 	public static ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
+    /**
+     * 每当从服务端收到新的客户端连接时，客户端的 Channel 存入 ChannelGroup 列表中，
+     * 并通知列表中的其他客户端 Channel
+     * @param ctx
+     * @throws Exception
+     */
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {  // (2)
         Channel incoming = ctx.channel();
@@ -41,6 +47,13 @@ public class SimpleChatServerHandler extends SimpleChannelInboundHandler<String>
         // A closed Channel is automatically removed from ChannelGroup,
         // so there is no need to do "channels.remove(ctx.channel());"
     }
+
+    /**
+     * 每当从服务端读到客户端写入信息时，将信息转发给其他客户端的 Channel。
+     * @param ctx
+     * @param s
+     * @throws Exception
+     */
     @Override
 	protected void channelRead0(ChannelHandlerContext ctx, String s) throws Exception { // (4)
 		Channel incoming = ctx.channel();
